@@ -1,0 +1,88 @@
+" Initialize Vundle package manager
+set nocompatible              " Required
+filetype off                  " Required
+
+" Set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" Let Vundle manage Vundle
+Plugin 'VundleVim/Vundle.vim'
+
+" Plugins for Go development
+Plugin 'fatih/vim-go'
+
+" Other useful plugins
+Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plugin 'junegunn/fzf.vim'
+Plugin 'tpope/vim-commentary'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'preservim/nerdtree'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+Plugin 'majutsushi/tagbar'
+Plugin 'scrooloose/syntastic'
+Plugin 'sheerun/vim-polyglot'
+Plugin 'jiangmiao/auto-pairs'
+Plugin 'ervandew/supertab'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+
+" All plugins should be added before the following line
+call vundle#end()
+filetype plugin indent on    " Required
+
+" General settings
+syntax on                    " Enable syntax highlighting
+set encoding=utf-8           " Use UTF-8 encoding
+set number                   " Show line numbers
+set cursorline               " Highlight the current line
+set cursorcolumn             " Highlight the current column
+set colorcolumn=100           " Visual aid for line length
+
+" Indentation settings for Go
+set tabstop=4 shiftwidth=4 expandtab
+
+" vim-go settings
+let g:go_fmt_command = "goimports"      " Use goimports for formatting
+let g:go_fmt_autosave = 1               " Format on save
+
+" Map <leader> to a comma
+let mapleader = ","
+
+" NERDTree settings
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+" Airline settings
+let g:airline_powerline_fonts = 1
+
+" Key mappings for Go development
+nnoremap <leader>nt :NERDTreeToggle<CR>
+nnoremap <leader>dd :NERDTreeFind<CR>
+nnoremap <leader>r :GoRun<CR>
+nnoremap <leader>b :GoBuild<CR>
+nnoremap <leader>t :GoTest<CR>
+nnoremap <leader>l :GoLint<CR>
+nnoremap <leader>v :GoVet<CR>
+nnoremap <leader>e :GoErrCheck<CR>
+nnoremap <leader>gd :GoDef<CR>
+nnoremap <leader>gi :GoInfo<CR>
+nnoremap <leader>gr :GoReferrers<CR>
+nnoremap <leader>gI :GoImplements<CR>
+nnoremap <leader>gt :GoDoc<CR>
+nnoremap <leader>tb :TagbarToggle<CR>
+
+" Disable arrow keys in normal mode
+nnoremap <Up> <Nop>
+nnoremap <Down> <Nop>
+nnoremap <Left> <Nop>
+nnoremap <Right> <Nop>
+
+" Quick save and quit commands
+nnoremap <leader>w :w!<CR>
+nnoremap <leader>q :q!<CR>
+
+" ============================================================================
+" End of .vimrc
+" ============================================================================
