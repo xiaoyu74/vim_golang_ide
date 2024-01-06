@@ -1,0 +1,236 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+# make less more friendly for non-text input files, see lesspipe(1)
+#[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+
+force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    #else
+	color_prompt=
+    fi
+fi
+
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ ' else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    #PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
+
+
+# Color alias
+alias ls='ls --color=auto'
+alias dir='dir --color=auto'
+alias vdir='vdir --color=auto'
+alias grep='grep --color=auto' 
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias ocmb='ocm backplane'
+
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+export VISUAL=vim
+export EDITOR="$VISUAL"
+
+
+# enable programmable completion features (you don't need to enable 
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile            
+# sources /etc/bash.bashrc).                                                    
+if ! shopt -oq posix; then                                                      
+  if [ -f /usr/share/bash-completion/bash_completion ]; then                    
+    . /usr/share/bash-completion/bash_completion                                
+  elif [ -f /etc/bash_completion ]; then                                        
+    . /etc/bash_completion                                                      
+  fi                                                                            
+fi                                                                              
+
+
+# BASH LS COLORS
+LS_COLORS=$LS_COLORS:'di=0;34:' ; export LS_COLORS
+
+
+# Terminal Prompt Setting            
+test -f "${HOME}/.colors" && . "${HOME}/.colors"                                
+source ~/.git-prompt.sh
+git_branch=${EMAGENTA}'$(__git_ps1 "(%s)")'
+ export PS1="\[${ECYAN}\][\u\[${NO_COLOR}\]:\[${EYELLOW}\]\W]\[${NO_COLOR}\]\[${git_branch}\]\[${NO_COLOR}\]$ "
+
+export PS1="┌\[${ECYAN}\][\u\[${NO_COLOR}\]:\[${EYELLOW}\]\W]\[${NO_COLOR}\]\[${git_branch}\]\[${NO_COLOR}\]\n└> "
+
+
+# Common Aliasname                                                              
+alias ll='ls -al'                                                               
+
+# vscode env
+export PATH=$PATH:/usr/local/:/usr/local/bin/
+
+# Golang env
+export PATH=$PATH:/usr/local/go/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+export GO111MODULE=auto
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/sbai/osd_work/google-cloud-sdk/path.bash.inc' ]; then . '/home/sbai/osd_work/google-cloud-sdk/path.bash.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/sbai/osd_work/google-cloud-sdk/completion.bash.inc' ]; then . '/home/sbai/osd_work/google-cloud-sdk/completion.bash.inc'; fi
+
+
+## OSD/ROSA ##
+
+export OCM_TOKEN=""
+
+BACKPLANE_DEFAULT_OPEN_BROWSER=true
+alias ocm-container-stg="OCM_URL=https://api.stage.openshift.com ocm-container"
+alias ocm-container-local='OCM_CONTAINER_LAUNCH_OPTS="-v ${PWD}:/root/local -w /root/local" ocm-container'
+
+alias occ='osdctl cluster context -S'
+alias codown="oc get co | awk '{ if (\$5 == \"True\" || \$4 == \"True\" || NR==1) print \$0; }'"
+alias od='oc describe'
+alias og='oc get'
+alias ocp='oc project'
+alias fileusage='df -h'
+alias random_line='shuf -n 1'
+alias ol='oc logs'
+alias olt='oc logs --tail 50'
+alias oes='oc get event --sort-by=.metadata.creationTimestamp'
+alias manb='man -Hfirefox'alias random_line='shuf -n 1'
+
+get-id-by-cluster-name () {
+    ocm get /api/clusters_mgmt/v1/clusters/ --parameter "search=name = '$1'"
+}
+
+compress () {
+ bn=$(basename $1)
+ tar czf "${bn}.tar.gz" $1
+}
+
+extract () {
+ tar xf $1 -C $2
+}
+
+ocm-login-stg () {
+    ocm login --token $OCM_TOKEN --url "https://api.stage.openshift.com"
+    ln -f ~/.config/backplane/config.stg.json ~/.config/backplane/config.json
+}
+
+ocm-login-int () {
+    ocm login --token $OCM_TOKEN --url "https://api.integration.openshift.com"
+    ln -f ~/.config/backplane/config.int.json ~/.config/backplane/config.json
+}
+
+ocm-login () {
+    ocm login --token $OCM_TOKEN --url "https://api.openshift.com"
+    ln -f ~/.config/backplane/config.prod.json ~/.config/backplane/config.json
+}
+
+# Setup PS1 for OSD/ROSA cluster access
+obl_function() {
+  source /home/sbai/osd_work/kube-ps1.sh
+  function cluster_function {
+    info="$(ocm backplane status 2> /dev/null)"
+    if [ $? -ne 0 ]; then return; fi
+    clustername=$(grep "Cluster Name" <<< $info | awk '{print $3}')
+    baseid=$(grep "Cluster Basedomain" <<< $info | awk '{print $3}' | cut -d'.' -f1,2)
+    echo $clustername.$baseid
+  }
+  KUBE_PS1_BINARY=oc
+  export KUBE_PS1_CLUSTER_FUNCTION=cluster_function
+  PS1='[\u@\h \W $(kube_ps1)]\$ '
+  
+  ocm backplane login $1
+}
+
+obl_manager() {
+  source /home/sbai/osd_work/kube-ps1.sh
+  function cluster_function {
+    info="$(ocm backplane status 2> /dev/null)"
+    if [ $? -ne 0 ]; then return; fi
+    clustername=$(grep "Cluster Name" <<< $info | awk '{print $3}')
+    baseid=$(grep "Cluster Basedomain" <<< $info | awk '{print $3}' | cut -d'.' -f1,2)
+    echo $clustername.$baseid
+  }
+  KUBE_PS1_BINARY=oc
+  export KUBE_PS1_CLUSTER_FUNCTION=cluster_function
+  PS1='[\u@\h \W $(kube_ps1)]\$ '
+  
+  ocm backplane login --manager $1
+}
+
+alias obl='obl_function'
+alias obl-manager='obl_manager'
+
+oblout() {
+    ocm backplane logout
+    export PS1="┌\[${ECYAN}\][\u\[${NO_COLOR}\]:\[${EYELLOW}\]\W]\[${NO_COLOR}\]\[${git_branch}\]\[${NO_COLOR}\]\n└> "
+}
+
+# minikube
+alias kubectl="minikube kubectl --"
+
+# Others
+export GTK_A11Y=none
